@@ -30,20 +30,20 @@ from kaolin.render.mesh import dibr_rasterization, texture_mapping, \
 
 # import from folder
 from fid_score import calculate_fid_given_paths
-from datasets.bird import Dataset
+from datasets.horse import Dataset
 from utils import camera_position_from_spherical_angles, generate_transformation_matrix, compute_gradient_penalty, Timer
 from models.model import VGG19, CameraEncoder, ShapeEncoder, LightEncoder, TextureEncoder
 
 torch.autograd.set_detect_anomaly(True)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--outf', help='folder to output images and model checkpoints')
-parser.add_argument('--dataroot', help='path to dataset root dir')
+parser.add_argument('--outf', default='./log/Horse/exp1', help='folder to output images and model checkpoints')
+parser.add_argument('--dataroot', default='./Horse_Data', help='path to dataset root dir')
 parser.add_argument('--template_path', default='template/sphere.obj', help='template mesh path')
-parser.add_argument('--category', type=str, default='bird', help='list of object classes to use')
+parser.add_argument('--category', type=str, default='horse', help='list of object classes to use')
 parser.add_argument('--workers', type=int, help='number of data loading workers', default=4)
-parser.add_argument('--batchSize', type=int, default=32, help='input batch size')
-parser.add_argument('--imageSize', type=int, default=128, help='the height / width of the input image to network')
+parser.add_argument('--batchSize', type=int, default=24, help='input batch size')
+parser.add_argument('--imageSize', type=int, default=256, help='the height / width of the input image to network')
 parser.add_argument('--nk', type=int, default=5, help='size of kerner')
 parser.add_argument('--nf', type=int, default=32, help='dim of unit channel')
 parser.add_argument('--niter', type=int, default=500, help='number of epochs to train for')
@@ -52,12 +52,12 @@ parser.add_argument('--beta1', type=float, default=0.5, help='beta1 for adam. de
 parser.add_argument('--cuda', default=1, type=int, help='enables cuda')
 parser.add_argument('--manualSeed', type=int, default=0, help='manual seed')
 parser.add_argument('--start_epoch', type=int, default=0, help='start epoch')
-parser.add_argument('--multigpus', action='store_true', default=False, help='whether use multiple gpus mode')
+parser.add_argument('--multigpus', action='store_true', default=True, help='whether use multiple gpus mode')
 parser.add_argument('--resume', action='store_true', default=True, help='whether resume ckpt')
 parser.add_argument('--lambda_gan', type=float, default=0.0001, help='parameter')
 parser.add_argument('--lambda_reg', type=float, default=1.0, help='parameter')
 parser.add_argument('--lambda_data', type=float, default=1.0, help='parameter')
-parser.add_argument('--lambda_ic', type=float, default=1.0, help='parameter')
+parser.add_argument('--lambda_ic', type=float, default=0.1, help='parameter')
 parser.add_argument('--lambda_lc', type=float, default=0.001, help='parameter')
 parser.add_argument('--azi_scope', type=float, default=360, help='parameter')
 parser.add_argument('--elev_range', type=str, default="0~30", help='~ separated list of classes for the lsun data set')
