@@ -86,12 +86,11 @@ class Dataset(data.Dataset):
 
         from torchvision.utils import save_image
         img = torchvision.transforms.functional.to_tensor(img)
-        save_image(img, 'img1.png')
-        seg = torchvision.transforms.functional.to_tensor(seg*255).max(0, True)[0]
-        save_image(seg, 'imgS1.png')
+        #save_image(img, 'img1.png')
+        seg = torchvision.transforms.functional.to_tensor(seg)[0].unsqueeze(0)
+        #save_image(seg, 'imgS1.png')
         img = img * seg + torch.ones_like(img) * (1 - seg)
-
-        save_image(img, 'imgR1.png')
+        #save_image(img, 'imgR1.png')
 
         rgbs = torch.cat([img, seg], dim=0)
 
