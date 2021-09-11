@@ -502,8 +502,9 @@ if __name__ == '__main__':
     for epoch in range(start_epoch, opt.niter):
         for iter, data in enumerate(train_dataloader):
             with Timer("Elapsed time in update: %f"):
-                Xa = Variable(data['data']['images']).cuda()
-                Ea = Variable(data['data']['edge']).cuda()
+                img, pts, normal, _, _ = data
+                pts = pts.cuda()
+                Xa = Variable(img).cuda()
                 batch_size = Xa.shape[0]
                 Ae = netE(Xa)
 
@@ -516,7 +517,7 @@ if __name__ == '__main__':
                 tri_mesh.export('%s/epoch_%03d_mesh_recon.obj' % (opt.outf, epoch))
 
                 # 3D loss between Ae tri_mesh and ground truth tri_mesh (Chamfer distance function)
-                loss = total_pts_loss(Ae['vertices'], Ae['img_feats'], Ae['vertices'], diffRender.vertices_init, True)
+                loss = total_pts_loss(Ae['vertices'], Ae['img_feats'], pts, diffRender.vertices_init, True)
 
                 loss.backward()
                 optimizerE.step()
